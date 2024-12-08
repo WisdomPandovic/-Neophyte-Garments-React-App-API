@@ -330,7 +330,7 @@ router.post("/product", async function (req, res) {
 			category,
 		});
 
-		await newPost.save();
+		await newProduct.save();
 
 		// Update category with the new post ID
 		await Category.findByIdAndUpdate(category, { $push: { products: newProduct._id } });
@@ -338,14 +338,13 @@ router.post("/product", async function (req, res) {
 		res.status(200).json({
 			success: true,
 			message: "Product created successfully",
-			data: newPost,
+			data: newProduct,
 		});
 	} catch (err) {
 		console.error("Error creating product:", err);
 		res.status(500).json({ success: false, message: err.message });
 	}
 });
-
 
 router.get('/product/:id', authenticate, async (req, res) => {
     try {
