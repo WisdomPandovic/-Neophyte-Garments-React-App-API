@@ -1,7 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
-const Post = require("../../models/post");
+const Post = require("../../models/product");
 const User = require("../../models/user");
 
 // Load environment variables
