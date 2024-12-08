@@ -1,4 +1,4 @@
-const Post = require("../../models/post");
+const Product = require("../../models/product");
 const authenticate = require('../../middleware/authenticate'); 
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
@@ -537,18 +537,15 @@ router.get('/posts-with-users', async function (req, res) {
 // 	}
 // });
 
-router.post("/post", async function (req, res) {
+router.post("/product", async function (req, res) {
 	try {
 		console.log("Received request body:", req.body);
 
-		const { title, header, location, content, price, category, user, images, video } = req.body;
+		const { name, price, category,images,  } = req.body;
 
 		// Ensure all required fields are provided
-		if (!title) {
+		if (!name) {
 			return res.status(400).json({ message: "Title is required." });
-		}
-		if (!header) {
-			return res.status(400).json({ message: "Header is required." });
 		}
 		if (!content) {
 			return res.status(400).json({ message: "Content is required." });
@@ -558,23 +555,6 @@ router.post("/post", async function (req, res) {
 		}
 		if (!category) {
 			return res.status(400).json({ message: "Category is required." });
-		}
-		if (!user) {
-			return res.status(400).json({ message: "User is required." });
-		}
-
-		// Validate user ID
-		if (!ObjectId.isValid(user)) {
-			return res.status(400).json({ msg: "Invalid user ID" });
-		}
-
-		const foundUser = await User.findById(user);
-		if (!foundUser) {
-			return res.status(404).json({ msg: "User not found" });
-		}
-
-		if (foundUser.role !== "admin") {
-			return res.status(403).json({ msg: "Only admins can create posts" });
 		}
 
 		// Validate category
@@ -593,77 +573,59 @@ router.post("/post", async function (req, res) {
 			return res.status(400).json({ msg: "At least one image URL is required." });
 		}
 
-		// if (!video) {
-		// 	return res.status(400).json({ msg: "A video URL is required." });
-		// }
-
 		// Create a new post
-		const newPost = new Post({
-			title,
+		const newProduct = new Post({
+			name,
 			images: imagePaths, // Accepting image URLs
-			video,              // Accepting video URL
-			header,
-			location,
 			content,
 			price,
 			category,
-			user,
 		});
 
 		await newPost.save();
 
 		// Update category with the new post ID
-		await Category.findByIdAndUpdate(category, { $push: { posts: newPost._id } });
+		await Category.findByIdAndUpdate(category, { $push: { products: newProduct._id } });
 
 		res.status(200).json({
 			success: true,
-			message: "Post created successfully",
+			message: "Product created successfully",
 			data: newPost,
 		});
 	} catch (err) {
-		console.error("Error creating post:", err);
+		console.error("Error creating product:", err);
 		res.status(500).json({ success: false, message: err.message });
 	}
 });
 
 
-router.get('/post/:id', authenticate, async (req, res) => {
+router.get('/product/:id', authenticate, async (req, res) => {
     try {
         const { id } = req.params;
-        const userId = req.user.userId;  // Access the decoded userId from the token
+        // const userId = req.user.userId;  // Access the decoded userId from the token
 
         if (!id) {
             return res.status(400).json({ message: 'Post ID is required' });
         }
 
         // Fetch the post by ID and populate its details (category, user, comments, etc.)
-        let post = await Post.findById(id)
+        let product = await Product.findById(id)
             .populate('category')      // Populate category information
-            .populate('user')          // Populate user information (author of the post)
-            .populate({
-                path: 'comments.comment_user', // Populate comment user's info
-                select: 'username',  // Only return the username of the comment author
-            })
+            // .populate('user')          // Populate user information (author of the post)
+            // .populate({
+            //     path: 'comments.comment_user', // Populate comment user's info
+            //     select: 'username',  // Only return the username of the comment author
+            // })
             .lean();  // Convert the mongoose document to plain JavaScript object
 
-        if (!post) {
-            return res.status(404).json({ message: 'Post not found' });
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
         }
 
-        // Check if the post is paid
-        if (post.paid) {
-            const user = await User.findById(userId);
-            const hasPaidForPost = user.paidPosts.some((paidPostId) => paidPostId.toString() === id.toString());
-
-            if (!hasPaidForPost) {
-                return res.status(403).json({ message: 'You need to pay for this post first' });
-            }
-        }
-
-        res.status(200).json(post);  // Send the post data
+        res.status(200).json(product);  // Send the post data
 
     } catch (err) {
-        console.error('Error fetching post:', err);
+        console.error('Error fetching product:', err);
         res.status(500).json({ error: 'Internal Server Error', message: err.message });
     }
 });

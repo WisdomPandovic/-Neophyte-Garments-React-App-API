@@ -26,7 +26,7 @@ const router = express.Router();
 // Require routes after middleware setup
 console.log('Loading routes...');
 require('./routes/user')(router);
-require('../routes/post')(router);
+require('../routes/product')(router);
 require('../routes/category')(router);
 require('../routes/contact')(router);
 require('../routes/subscription')(router);

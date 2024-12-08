@@ -40,7 +40,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const userRoutes = require('./routes/routes/user'); 
-const postRoutes = require('./routes/routes/post'); 
+const productRoutes = require('./routes/routes/product'); 
 const categoryRoutes = require('./routes/routes/category'); 
 const contactRoutes = require('./routes/routes/contact'); 
 const subscriptionRoutes = require('./routes/routes/subscription'); 
@@ -51,7 +51,7 @@ const app = express();
 
 // Use environment variables for configuration
 const PORT = process.env.PORT || 3007;
-const DB_URL = process.env.DB_URL || "mongodb://127.0.0.1:27017/camila-blog";
+const DB_URL = process.env.DB_URL || "mongodb://127.0.0.1:27017/neophyte-garment";
 const SESSION_SECRET = process.env.SESSION_SECRET || 'default-secret';
 
 // Connect to MongoDB
@@ -89,7 +89,7 @@ app.use('/postimage', express.static(path.join(__dirname, 'public', 'postimage')
 
 // Routes
 app.use('/api', userRoutes);
-app.use('/api', postRoutes);
+app.use('/api', productRoutes);
 app.use('/api', categoryRoutes);
 app.use('/api', contactRoutes);
 app.use('/api', subscriptionRoutes);
