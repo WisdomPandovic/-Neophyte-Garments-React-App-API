@@ -289,7 +289,7 @@ router.post("/product", async function (req, res) {
 	try {
 		console.log("Received request body:", req.body);
 
-		const { name, price, category,images,  } = req.body;
+		const { name, price, category,images, content  } = req.body;
 
 		// Ensure all required fields are provided
 		if (!name) {
