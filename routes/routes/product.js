@@ -293,7 +293,7 @@ router.post("/product", async function (req, res) {
 
 		// Ensure all required fields are provided
 		if (!name) {
-			return res.status(400).json({ message: "Title is required." });
+			return res.status(400).json({ message: "Name is required." });
 		}
 		if (!content) {
 			return res.status(400).json({ message: "Content is required." });
@@ -322,7 +322,7 @@ router.post("/product", async function (req, res) {
 		}
 
 		// Create a new post
-		const newProduct = new Post({
+		const newProduct = new Product({
 			name,
 			images: imagePaths, // Accepting image URLs
 			content,
