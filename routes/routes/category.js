@@ -8,8 +8,8 @@ const router = express.Router();
 // const routes = function (app) {
 router.get('/category', async function (req, res) {
 	try {
-		let category = await Category.find().populate('post').lean()
-		console.log('Populated categories with posts:', category);
+		let category = await Category.find().populate('product').lean()
+		console.log('Populated categories with products:', category);
 		res.json(category)
 	} catch (err) {
 		res.status(500).send(err.message)
@@ -25,8 +25,8 @@ router.get('/category/:id', async function (req, res) {
 			return res.status(400).json({ msg: 'Invalid category ID' });
 		}
 
-		// Fetch category with populated posts
-		let category = await Category.findById(id).populate('post').lean();
+		// Fetch category with populated products
+		let category = await Category.findById(id).populate('product').lean();
 
 		if (!category) {
 			return res.status(404).json({ msg: 'Category not found' });
@@ -36,7 +36,7 @@ router.get('/category/:id', async function (req, res) {
 		let data = {
 			name: category.name,
 			id: category.id,
-			post: category.post || []
+			product: category.product || []
 		};
 
 		res.json({ status: 'success', data });
