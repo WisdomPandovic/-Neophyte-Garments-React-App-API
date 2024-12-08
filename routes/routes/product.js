@@ -144,7 +144,7 @@ router.post("/product", async function (req, res) {
 	}
 });
 
-router.get('/product/:id', authenticate, async (req, res) => {
+router.get('/product/:id', async (req, res) => {
     try {
         const { id } = req.params;
         // const userId = req.user.userId;  // Access the decoded userId from the token
